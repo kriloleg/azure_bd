@@ -1,0 +1,24 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "IoTInput",
+						"type": "DatasetReference"
+					},
+					"name": "iotsteam"
+				}
+			],
+			"sinks": [],
+			"transformations": [
+				{
+					"name": "RecentYears"
+				}
+			],
+			"script": "\n\nsource(allowSchemaDrift: true,\n\tvalidateSchema: false,\n\twildcardPaths:['*']) ~> iotsteam\niotsteam filter(toInteger(Year) >= 2018) ~> RecentYears"
+		}
+	}
+}
