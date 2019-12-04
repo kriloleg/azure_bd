@@ -48,28 +48,8 @@
 									"type": "String"
 								},
 								"sink": {
-									"type": "Int16",
+									"type": "String",
 									"ordinal": 1
-								}
-							},
-							{
-								"source": {
-									"name": "Industry_aggregation_NZSIOC",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 2
-								}
-							},
-							{
-								"source": {
-									"name": "Industry_code_NZSIOC",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 3
 								}
 							},
 							{
@@ -79,7 +59,7 @@
 								},
 								"sink": {
 									"type": "String",
-									"ordinal": 4
+									"ordinal": 2
 								}
 							},
 							{
@@ -89,17 +69,7 @@
 								},
 								"sink": {
 									"type": "String",
-									"ordinal": 5
-								}
-							},
-							{
-								"source": {
-									"name": "Variable_code",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 6
+									"ordinal": 3
 								}
 							},
 							{
@@ -109,17 +79,7 @@
 								},
 								"sink": {
 									"type": "String",
-									"ordinal": 7
-								}
-							},
-							{
-								"source": {
-									"name": "Variable_category",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 8
+									"ordinal": 4
 								}
 							},
 							{
@@ -129,17 +89,7 @@
 								},
 								"sink": {
 									"type": "String",
-									"ordinal": 9
-								}
-							},
-							{
-								"source": {
-									"name": "Industry_code_ANZSIC06",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 10
+									"ordinal": 5
 								}
 							}
 						]
