@@ -70,7 +70,6 @@
 				"typeProperties": {
 					"location": {
 						"type": "AzureBlobStorageLocation",
-						"fileName": "result.txt",
 						"container": "outcoming"
 					},
 					"columnDelimiter": ",",
@@ -199,6 +198,52 @@
 					}
 				],
 				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/IoTInput')]",
+				"[concat(variables('factoryId'), '/datasets/IoTOutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "IoTInput",
+								"type": "DatasetReference"
+							},
+							"name": "iotsteam",
+							"typeProperties": {}
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "IoTOutput",
+								"type": "DatasetReference"
+							},
+							"name": "SummaryFor2018"
+						}
+					],
+					"transformations": [
+						{
+							"name": "RecentYears"
+						},
+						{
+							"name": "MapDrifted",
+							"description": "Creates an explicit mapping for each drifted column"
+						},
+						{
+							"name": "Summary"
+						}
+					],
+					"script": "\n\nsource(allowSchemaDrift: true,\n\tvalidateSchema: true) ~> iotsteam\nMapDrifted filter(toInteger(Year) >= 2018) ~> RecentYears\niotsteam derive(Year = toShort(byName('Year')),\n\t\tIndustry_aggregation_NZSIOC = toString(byName('Industry_aggregation_NZSIOC')),\n\t\tIndustry_code_NZSIOC = toString(byName('Industry_code_NZSIOC')),\n\t\tIndustry_name_NZSIOC = toString(byName('Industry_name_NZSIOC')),\n\t\tUnits = toString(byName('Units')),\n\t\tVariable_code = toString(byName('Variable_code')),\n\t\tVariable_name = toString(byName('Variable_name')),\n\t\tVariable_category = toString(byName('Variable_category')),\n\t\tValue = toString(byName('Value')),\n\t\tIndustry_code_ANZSIC06 = toString(byName('Industry_code_ANZSIC06'))) ~> MapDrifted\nRecentYears aggregate(groupBy(Year,\n\t\tVariable_name),\n\tValue = sum(toDouble(Value))) ~> Summary\nSummary sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> SummaryFor2018"
+				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/IoTInput')]",
