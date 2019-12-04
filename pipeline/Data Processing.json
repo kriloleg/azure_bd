@@ -3,110 +3,26 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Incoming data processing",
-				"type": "Copy",
+				"name": "SummaryCalculationFor2018",
+				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "7.00:00:00",
-					"retry": 1,
+					"retry": 0,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
 				},
 				"userProperties": [],
 				"typeProperties": {
-					"source": {
-						"type": "DelimitedTextSource",
-						"storeSettings": {
-							"type": "AzureBlobStorageReadSettings",
-							"recursive": true,
-							"wildcardFileName": "*"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextReadSettings"
+					"dataflow": {
+						"referenceName": "SummaryCalculationFor2018",
+						"type": "DataFlowReference",
+						"parameters": {
+							"Year": "2018"
 						}
-					},
-					"sink": {
-						"type": "DelimitedTextSink",
-						"storeSettings": {
-							"type": "AzureBlobStorageWriteSettings",
-							"copyBehavior": "MergeFiles"
-						},
-						"formatSettings": {
-							"type": "DelimitedTextWriteSettings",
-							"quoteAllText": true,
-							"fileExtension": ".txt"
-						}
-					},
-					"enableStaging": false,
-					"translator": {
-						"type": "TabularTranslator",
-						"mappings": [
-							{
-								"source": {
-									"name": "Year",
-									"type": "String"
-								},
-								"sink": {
-									"type": "Int16",
-									"ordinal": 1
-								}
-							},
-							{
-								"source": {
-									"name": "Industry_name_NZSIOC",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 2
-								}
-							},
-							{
-								"source": {
-									"name": "Units",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 3
-								}
-							},
-							{
-								"source": {
-									"name": "Variable_name",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 4
-								}
-							},
-							{
-								"source": {
-									"name": "Value",
-									"type": "String"
-								},
-								"sink": {
-									"type": "String",
-									"ordinal": 5
-								}
-							}
-						]
 					}
-				},
-				"inputs": [
-					{
-						"referenceName": "IoTInput",
-						"type": "DatasetReference"
-					}
-				],
-				"outputs": [
-					{
-						"referenceName": "IoTOutput",
-						"type": "DatasetReference"
-					}
-				]
+				}
 			}
 		],
 		"annotations": []
