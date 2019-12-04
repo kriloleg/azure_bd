@@ -1,0 +1,19 @@
+{
+	"name": "Periodical calculation",
+	"properties": {
+		"description": "Just for test",
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 10,
+				"startTime": "2019-12-04T09:21:00.000Z",
+				"endTime": "2019-12-13T09:21:00.000Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}
