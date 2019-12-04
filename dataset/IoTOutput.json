@@ -1,0 +1,22 @@
+{
+	"name": "IoTOutput",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BlobStorageService",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "result.txt",
+				"container": "outcoming"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
