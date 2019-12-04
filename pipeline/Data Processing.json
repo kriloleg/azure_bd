@@ -48,7 +48,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"type": "String",
+									"type": "Int16",
 									"ordinal": 1
 								}
 							},
