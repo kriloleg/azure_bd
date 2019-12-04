@@ -23,119 +23,37 @@
 			"properties": {
 				"activities": [
 					{
-						"name": "Incoming data processing",
-						"type": "Copy",
+						"name": "SummaryCalculationFor2018",
+						"type": "ExecuteDataFlow",
 						"dependsOn": [],
 						"policy": {
 							"timeout": "7.00:00:00",
-							"retry": 1,
+							"retry": 0,
 							"retryIntervalInSeconds": 30,
 							"secureOutput": false,
 							"secureInput": false
 						},
 						"userProperties": [],
 						"typeProperties": {
-							"source": {
-								"type": "DelimitedTextSource",
-								"storeSettings": {
-									"type": "AzureBlobStorageReadSettings",
-									"recursive": true,
-									"wildcardFileName": "*"
+							"dataflow": {
+								"referenceName": "SummaryCalculationFor2018",
+								"type": "DataFlowReference",
+								"parameters": {
+									"Year": "2018"
 								},
-								"formatSettings": {
-									"type": "DelimitedTextReadSettings"
+								"datasetParameters": {
+									"iotsteam": {},
+									"SummaryFor2018": {}
 								}
 							},
-							"sink": {
-								"type": "DelimitedTextSink",
-								"storeSettings": {
-									"type": "AzureBlobStorageWriteSettings",
-									"copyBehavior": "MergeFiles"
-								},
-								"formatSettings": {
-									"type": "DelimitedTextWriteSettings",
-									"quoteAllText": true,
-									"fileExtension": ".txt"
-								}
-							},
-							"enableStaging": false,
-							"translator": {
-								"type": "TabularTranslator",
-								"mappings": [
-									{
-										"source": {
-											"name": "Year",
-											"type": "String"
-										},
-										"sink": {
-											"type": "Int16",
-											"ordinal": 1
-										}
-									},
-									{
-										"source": {
-											"name": "Industry_name_NZSIOC",
-											"type": "String"
-										},
-										"sink": {
-											"type": "String",
-											"ordinal": 2
-										}
-									},
-									{
-										"source": {
-											"name": "Units",
-											"type": "String"
-										},
-										"sink": {
-											"type": "String",
-											"ordinal": 3
-										}
-									},
-									{
-										"source": {
-											"name": "Variable_name",
-											"type": "String"
-										},
-										"sink": {
-											"type": "String",
-											"ordinal": 4
-										}
-									},
-									{
-										"source": {
-											"name": "Value",
-											"type": "String"
-										},
-										"sink": {
-											"type": "String",
-											"ordinal": 5
-										}
-									}
-								]
-							}
-						},
-						"inputs": [
-							{
-								"referenceName": "IoTInput",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						],
-						"outputs": [
-							{
-								"referenceName": "IoTOutput",
-								"type": "DatasetReference",
-								"parameters": {}
-							}
-						]
+							"staging": {}
+						}
 					}
 				],
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/IoTInput')]",
-				"[concat(variables('factoryId'), '/datasets/IoTOutput')]"
+				"[concat(variables('factoryId'), '/dataflows/SummaryCalculationFor2018')]"
 			]
 		},
 		{
@@ -205,7 +123,7 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"name": "[concat(parameters('factoryName'), '/SummaryCalculationFor2018')]",
 			"type": "Microsoft.DataFactory/factories/dataflows",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -242,12 +160,44 @@
 							"name": "Summary"
 						}
 					],
-					"script": "\n\nsource(allowSchemaDrift: true,\n\tvalidateSchema: true) ~> iotsteam\nMapDrifted filter(toInteger(Year) >= 2018) ~> RecentYears\niotsteam derive(Year = toShort(byName('Year')),\n\t\tIndustry_aggregation_NZSIOC = toString(byName('Industry_aggregation_NZSIOC')),\n\t\tIndustry_code_NZSIOC = toString(byName('Industry_code_NZSIOC')),\n\t\tIndustry_name_NZSIOC = toString(byName('Industry_name_NZSIOC')),\n\t\tUnits = toString(byName('Units')),\n\t\tVariable_code = toString(byName('Variable_code')),\n\t\tVariable_name = toString(byName('Variable_name')),\n\t\tVariable_category = toString(byName('Variable_category')),\n\t\tValue = toString(byName('Value')),\n\t\tIndustry_code_ANZSIC06 = toString(byName('Industry_code_ANZSIC06'))) ~> MapDrifted\nRecentYears aggregate(groupBy(Year,\n\t\tVariable_name),\n\tValue = sum(toDouble(Value))) ~> Summary\nSummary sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> SummaryFor2018"
+					"script": "\nparameters{\n\tYear as integer (2018)\n}\nsource(allowSchemaDrift: true,\n\tvalidateSchema: true) ~> iotsteam\nMapDrifted filter(toInteger(Year) >= 2018) ~> RecentYears\niotsteam derive(Year = toShort(byName('Year')),\n\t\tIndustry_aggregation_NZSIOC = toString(byName('Industry_aggregation_NZSIOC')),\n\t\tIndustry_code_NZSIOC = toString(byName('Industry_code_NZSIOC')),\n\t\tIndustry_name_NZSIOC = toString(byName('Industry_name_NZSIOC')),\n\t\tUnits = toString(byName('Units')),\n\t\tVariable_code = toString(byName('Variable_code')),\n\t\tVariable_name = toString(byName('Variable_name')),\n\t\tVariable_category = toString(byName('Variable_category')),\n\t\tValue = toString(byName('Value')),\n\t\tIndustry_code_ANZSIC06 = toString(byName('Industry_code_ANZSIC06'))) ~> MapDrifted\nRecentYears aggregate(groupBy(Year,\n\t\tVariable_name),\n\tValue = sum(toDouble(Value))) ~> Summary\nSummary sink(allowSchemaDrift: true,\n\tvalidateSchema: false) ~> SummaryFor2018"
 				}
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/IoTInput')]",
 				"[concat(variables('factoryId'), '/datasets/IoTOutput')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Periodical calculation')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"description": "Just for test",
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "Data Processing",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 10,
+						"startTime": "2019-12-04T09:21:00.000Z",
+						"endTime": "2019-12-06T09:21:00.000Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/Data Processing')]"
 			]
 		}
 	]
